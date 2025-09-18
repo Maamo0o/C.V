@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sparkleContainer = document.getElementById('sparkle-container');
     const actionButtons = document.querySelectorAll('.action-btn');
     const closeOverlayButtons = document.querySelectorAll('.close-overlay');
-    
+    const body = document.body;
+
     let count = 3;
     const countdownInterval = setInterval(() => {
         if (count > 0) {
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const targetOverlay = document.getElementById(targetOverlayId);
                 if (targetOverlay) {
                     targetOverlay.classList.add('active');
+                    body.classList.add('paused-animation');
                 }
             }
         });
@@ -50,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const parentOverlay = this.closest('.overlay');
             if (parentOverlay) {
                 parentOverlay.classList.remove('active');
+                body.classList.remove('paused-animation');
             }
         });
     });
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         overlay.addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('active');
+                body.classList.remove('paused-animation');
             }
         });
     });
