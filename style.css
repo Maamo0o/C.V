@@ -15,15 +15,41 @@
     100% { transform: scale(1.1); box-shadow: 0 0 0 50px rgba(170, 0, 170, 0); }
 }
 
-@keyframes countdown-pulse {
-    0% { transform: scale(0.8); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(0.8); opacity: 0.7; }
+/* NEW: Keyframe animation for text slide-in and glow */
+@keyframes text-slide-in-glow {
+    0% {
+        transform: translateX(0); /* يبدأ من موقعه الحالي */
+        text-shadow: 0 0 5px silver, 0 0 10px #222; 
+    }
+    10% {
+         transform: translateX(0);
+         text-shadow: 0 0 5px silver, 0 0 10px #222;
+    }
+    30% { /* نهاية التحرك وبداية اللمعان */
+        text-shadow: 
+            0 0 10px silver, 0 0 20px silver, /* لمعان أقوى */
+            5px 0 20px rgba(255, 255, 255, 0.5), /* لمعان إضافي من اليسار */
+            -5px 0 20px rgba(255, 255, 255, 0.5); /* لمعان إضافي من اليمين */
+    }
+    100% {
+        transform: translateX(10%); /* تحريك بسيط لليمين لتأثير "التحرك" */
+        text-shadow: 0 0 5px silver, 0 0 10px #222; /* العودة للمعان العادي */
+    }
+}
+
+
+html {
+    background: #000;
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
 }
 
 body {
-    background-color: #0d0d0d;
-    color: #e0e0e0;
+    background: transparent !important;
+    color: #e0e0e0 !important;
     font-family: 'Orbitron', sans-serif;
     margin: 0;
     padding: 0;
@@ -44,10 +70,8 @@ body.paused-animation #fixed-background {
     width: 100%;
     height: 100%;
     z-index: -2;
-    background-color: #0d0d0d;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="purple" opacity="0.3"/><circle cx="20" cy="80" r="7" fill="darkviolet" opacity="0.2"/><circle cx="80" cy="20" r="8" fill="magenta" opacity="0.4"/><path d="M50 0 L60 20 L40 20 Z" fill="darkviolet" opacity="0.3"/></svg>');
-    background-size: 200px 200px;
-    background-repeat: repeat;
+    background: #000 !important;
+    background-image: none !important;
     animation: falling-meteors 30s linear infinite;
 }
 
@@ -58,10 +82,14 @@ body.paused-animation #fixed-background {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(128, 0, 128, 0.2) 0%, rgba(0,0,0,0.6) 70%);
+    background: none !important;
     z-index: -1;
     pointer-events: none;
 }
+
+/* ========================================= */
+/* ===== NEW INTRO SCREEN STYLES (FADE) ===== */
+/* ========================================= */
 
 #intro-screen {
     position: fixed;
@@ -69,31 +97,78 @@ body.paused-animation #fixed-background {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #0d0d0d;
+    background-color: #000; 
     z-index: 10000;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    transition: opacity 0.5s ease-out;
+    align-items: center;
+    overflow: hidden;
+    transition: opacity 1s ease-out; /* لعملية الإخفاء النهائية */
 }
 
-.countdown-text {
-    font-size: 2.5em;
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-    margin-bottom: 20px;
+.intro-asset {
+    position: absolute;
+    opacity: 0; /* نجعلها كلها مخفية في البداية */
+    transition: opacity 1s ease-in-out;
+    z-index: 1; 
 }
 
-#countdown-timer {
-    font-size: 6em;
-    color: #ff00ff;
-    text-shadow: 0 0 15px #ff00ff, 0 0 30px #ff00ff;
-    animation: countdown-pulse 1s infinite alternate;
+#intro-image {
+    /* وضع الصورة في الركن الأيمن وتكبيرها قليلاً لملء الارتفاع */
+    height: 100%;
+    width: auto;
+    right: 0;
+    bottom: 0;
+    object-fit: contain; /* نستخدم contain للحفاظ على الأبعاد */
+    max-width: none;
+    
+    /* جعل الخلفية شفافة لدمجها مع الخلفية السوداء */
+    background-color: transparent;
+    
+    /* التأثير الأهم: mask-image لعملية التلاشي */
+    mask-image: linear-gradient(
+        to right, 
+        transparent 0%,    /* تبدأ الصورة بالتلاشي على اليسار */
+        black 40%,         /* تظهر بوضوح في المنتصف واليمين */
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to right, 
+        transparent 0%, 
+        black 40%, 
+        black 100%
+    );
+    
+    /* نجعلها تتوسط الشاشة عمودياً ونضبطها لليمين */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    transition: opacity 1s ease-in-out, transform 0.5s; 
 }
+
+#welcome-text {
+    /* النص يكون في المنتصف أو اليسار */
+    left: 5%;
+    right: auto;
+    /* تغيير اللون والحجم */
+    font-size: 3.5em; /* أكبر قليلاً */
+    color: silver !important; /* لون سيلفر */
+    text-shadow: 0 0 5px silver, 0 0 10px #222 !important; /* لمعان أساسي */
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 5; /* لضمان ظهور النص فوق جزء الصورة المتلاشي */
+    max-width: 50%; /* لتحديد منطقة الكتابة */
+    white-space: nowrap; /* لمنع النص من النزول سطر جديد */
+    opacity: 0; /* يبدأ مخفياً */
+    /* *** تم إزالة transform: translateX(-100%); من هنا *** */
+}
+
+/* ========================================= */
+/* ===== MAIN CONTENT & GLOW STYLES ===== */
+/* ========================================= */
 
 .text-glow {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 5px silver, 0 0 10px #222 !important;
 }
 
 #sparkle-container {
@@ -108,17 +183,17 @@ body.paused-animation #fixed-background {
 
 .sparkle {
     position: absolute;
-    background-color: #800080;
+    background-color: silver !important;
     width: 5px;
     height: 5px;
     border-radius: 50%;
     opacity: 1;
     animation: sparkle-anim 0.8s forwards;
-    box-shadow: 0 0 5px #800080, 0 0 10px #800080;
+    box-shadow: 0 0 5px silver, 0 0 10px #222 !important;
 }
 
 #main-content {
-    opacity: 0;
+    /* تم نقل الـ opacity والـ visibility إلى الـ HTML لضمان الإخفاء الأولي */
     transition: opacity 1s ease-in;
     display: flex;
     flex-direction: column;
@@ -128,8 +203,8 @@ body.paused-animation #fixed-background {
 }
 
 #main-content.show {
-    opacity: 1;
-    display: flex;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .header {
@@ -150,6 +225,8 @@ body.paused-animation #fixed-background {
     align-items: center;
     margin-bottom: 30px;
 }
+/* ... باقي الستايلات القديمة ... */
+
 
 .profile-image-container {
     width: 220px;
@@ -157,11 +234,11 @@ body.paused-animation #fixed-background {
     margin: 0 auto 15px;
     border-radius: 50%;
     overflow: hidden;
-    border: 5px solid #ff00ff;
-    box-shadow: 0 0 20px rgba(255, 0, 255, 0.7), 0 0 40px rgba(255, 0, 255, 0.3);
+    border: 4px solid #b0b0b0 !important;
+    box-shadow: 0 0 18px #222, 0 0 32px #111 !important;
     z-index: 10;
     position: relative;
-    background-color: #0d0d0d;
+    background: rgba(0,0,0,0.7) !important;
 }
 
 .profile-image {
@@ -173,15 +250,15 @@ body.paused-animation #fixed-background {
 
 h1 {
     font-size: 3em;
-    color: #e0e0e0;
+    color: #f5f5f5 !important;
     margin-bottom: 5px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 8px #222, 0 0 2px #fff !important;
 }
 
 .header p {
     font-size: 1.5em;
-    color: #a0a0a0;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    color: #b0b0b0 !important;
+    text-shadow: 0 0 3px silver !important;
     margin: 0;
 }
 
@@ -199,13 +276,13 @@ h1 {
 }
 
 .bubble {
-    background-color: rgba(20, 0, 20, 0.8);
+    background: rgba(20, 20, 20, 0.85) !important;
     border-radius: 25px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 0, 255, 0.4);
+    box-shadow: 0 2px 16px #111, 0 0 8px #444 !important;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 0, 255, 0.3);
+    border: 1px solid #888 !important;
     flex: 1 1 200px;
     max-width: 240px;
     min-width: 180px;
@@ -221,9 +298,9 @@ h1 {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgba(50, 0, 50, 0.9);
-    color: #f0f0f0;
-    border: none;
+    background: rgba(40, 40, 40, 0.9) !important;
+    color: #f5f5f5 !important;
+    border: 1px solid #888 !important;
     padding: 18px 10px;
     text-align: center;
     font-size: 1.1em;
@@ -234,20 +311,20 @@ h1 {
     gap: 10px;
     transition: background-color 0.3s ease;
     z-index: 10;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 4px #222 !important;
     border-radius: 25px;
     text-decoration: none;
     font-weight: bold;
 }
 
 .action-btn:hover, .download-btn:hover {
-    background-color: rgba(70, 0, 70, 0.9);
+    background: rgba(80, 80, 80, 0.9) !important;
 }
 
 .action-btn .material-icons, .download-btn .material-icons {
     margin-right: 8px;
     font-size: 28px;
-    color: #ff00ff;
+    color: silver !important;
 }
 
 .skills-section {
@@ -260,10 +337,11 @@ h1 {
 
 .skills-title {
     font-size: 2.5em;
-    color: #ff00ff;
+    color: silver !important;
     margin-bottom: 40px;
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-    font-weight: 700;
+        text-shadow: 0 0 4px #222, 0 0 2px #888 !important;
+        font-weight: 700;
+        color: #c0c0c0 !important;
 }
 
 .skills-container {
@@ -283,33 +361,33 @@ h1 {
 .skill-icon-circle {
     width: 100px;
     height: 100px;
-    border: 3px solid #800080;
+    border: 2px solid #b0b0b0 !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    background-color: rgba(20, 0, 20, 0.8);
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+    background: rgba(30, 30, 30, 0.8) !important;
+    box-shadow: 0 0 10px #222 !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-icon-circle i {
     font-size: 4em;
-    color: #ff00ff;
-    text-shadow: 0 0 10px #ff00ff;
+    color: #e0e0e0 !important;
+    text-shadow: 0 0 10px silver !important;
 }
 
 .skill-text {
     font-size: 1.2em;
-    color: #e0e0e0;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    color: #b0b0b0 !important;
+    text-shadow: 0 0 2px #222, 0 0 1px #888 !important;
     margin-top: 5px;
+    font-weight: 500;
 }
 
 .skill-icon-circle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+    box-shadow: 0 0 20px silver !important;
 }
 
 .overlay {
@@ -318,8 +396,7 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.98);
-    backdrop-filter: blur(15px);
+    background: transparent !important;
     z-index: 20000;
     display: flex;
     justify-content: center;
@@ -335,37 +412,41 @@ h1 {
 }
 
 .overlay-content {
-    background-color: rgba(20, 0, 20, 0.95);
-    border-radius: 15px;
+    background: rgba(20,20,20,0.95) !important;
+    border: 1px solid #888 !important;
+    box-shadow: 0 0 24px #222 !important;
     padding: 40px;
     max-width: 700px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 0 30px rgba(255, 0, 255, 0.7);
     position: relative;
-    border: 1px solid rgba(255, 0, 255, 0.5);
 }
 
 .overlay-content h2 {
     font-size: 2.2em;
-    color: #ff00ff;
+    color: #c0c0c0 !important;
     margin-bottom: 25px;
-    text-shadow: 0 0 10px #ff00ff;
+    text-shadow: 0 0 4px #222, 0 0 2px #888 !important;
     text-align: center;
+    font-weight: 700;
 }
 
 .anschreiben-text {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 1.1em;
-    color: #e0e0e0;
+    color: #b0b0b0 !important;
     line-height: 1.8;
+    text-shadow: 0 0 2px #222, 0 0 1px #888 !important;
+    font-weight: 500;
 }
 
 .overlay-content p, .overlay-content ul {
     font-size: 1.1em;
-    color: #e0e0e0;
+    color: #b0b0b0 !important;
     line-height: 1.8;
+    text-shadow: 0 0 2px #222, 0 0 1px #888 !important;
+    font-weight: 500;
 }
 
 .overlay-content ul {
@@ -378,7 +459,7 @@ h1 {
 }
 
 .overlay-content strong {
-    color: #ff00ff;
+    color: silver !important;
 }
 
 .close-overlay {
@@ -387,7 +468,7 @@ h1 {
     right: 15px;
     background: none;
     border: none;
-    color: #ff00ff;
+    color: #e0e0e0 !important;
     font-size: 35px;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -395,15 +476,15 @@ h1 {
 
 .close-overlay:hover {
     transform: rotate(90deg);
-    color: #e0e0e0;
+    color: #fff !important;
 }
 
 .footer {
     text-align: center;
     padding: 25px 0;
-    border-top: 1px solid #4a004a;
+    border-top: 1px solid #888 !important;
     margin-top: 20px;
-    color: #a0a0a0;
+    color: #888 !important;
     font-size: 0.9em;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 1px #222 !important;
 }
