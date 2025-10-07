@@ -13,10 +13,12 @@
 <body>
 
     <div id="intro-screen">
-        <div class="countdown-text">Are you Ready ?!</div>
-        <div id="countdown-timer">3</div>
-    </div>
+        
+        <img id="intro-image" src="1000026359.jpg" alt="Mahmoud Mahran in Elevator" class="intro-asset">
+        
+        <h1 id="welcome-text" class="text-glow intro-asset"></h1>
 
+    </div>
     <div id="fixed-background"></div>
 
     <div id="sparkle-container"></div>
@@ -31,7 +33,7 @@
         </div>
     </header>
 
-    <main id="main-content" class="container">
+    <main id="main-content" class="container" style="opacity: 0; visibility: hidden;">
         
         <div class="buttons-container">
             <section class="bubble">
@@ -73,10 +75,13 @@
                     <p class="skill-text text-glow">Teamwork</p>
                 </div>
                 <div class="skill-item">
-                    <div class="skill-icon-circle">
-                        <i class="fas fa-user-check"></i>
+                    <div class="skill-icon-circle" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-brain" style="font-size:2.2em; color: silver; position: relative; z-index: 1;"></i>
+                        <i class="fas fa-star" style="font-size:0.9em; color: silver; position: absolute; left: 70%; top: 10%; z-index: 2;"></i>
+                        <i class="fas fa-star" style="font-size:0.7em; color: silver; position: absolute; left: 80%; top: 0%; z-index: 2;"></i>
+                        <i class="fas fa-star" style="font-size:0.6em; color: silver; position: absolute; left: 60%; top: -5%; z-index: 2;"></i>
                     </div>
-                    <p class="skill-text text-glow">Teamleiter</p>
+                    <p class="skill-text text-glow">Kreativ</p>
                 </div>
                 <div class="skill-item">
                     <div class="skill-icon-circle">
@@ -91,8 +96,8 @@
                     <p class="skill-text text-glow">Python Basics</p>
                 </div>
                 <div class="skill-item">
-                    <div class="skill-icon-circle">
-                        <i class="fas fa-brain"></i>
+                    <div class="skill-icon-circle" style="display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-tachometer-alt" style="font-size:2.8em; color: silver;"></i>
                     </div>
                     <p class="skill-text text-glow">Schnelllerner</p>
                 </div>
